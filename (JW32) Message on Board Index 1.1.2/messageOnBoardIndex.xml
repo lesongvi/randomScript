@@ -1,0 +1,312 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hookexport>
+  <hookdata>
+    <config>
+      <hook_name>(JW32) Message on Board Index</hook_name>
+      <hook_desc>Shows a message on board index</hook_desc>
+      <hook_author>Jakub Włoch</hook_author>
+      <hook_email>ipb@wloch.me</hook_email>
+      <hook_website/>
+      <hook_update_check>http://ipb.wloch.me/resource_updates.php?resource=jw_mbiIF</hook_update_check>
+      <hook_requirements><![CDATA[a:3:{s:21:"required_applications";a:0:{}s:20:"hook_php_version_min";s:0:"";s:20:"hook_php_version_max";s:0:"";}]]></hook_requirements>
+      <hook_version_human>1.1.2</hook_version_human>
+      <hook_version_long>11002</hook_version_long>
+      <hook_extra_data><![CDATA[a:4:{s:7:"display";a:2:{s:8:"settings";s:190:"Grupa ustawień: (JW32) Message on Board Index<br />Ustawienia: Grupy, Miejsce wyświetlania, Parsować nowe linie w wiadomości?, Tytuł wiadomości, Włączyć zwijanie boksa?, Wiadomość";s:9:"templates";s:26:"Z skin_boards: hookMessage";}s:13:"settingGroups";a:1:{i:0;s:6:"jw_mbi";}s:8:"settings";a:7:{i:0;s:13:"jw_mbi_groups";i:1;s:14:"jw_mbi_message";i:2;s:12:"jw_mbi_parse";i:3;s:15:"jw_mbi_position";i:4;s:12:"jw_mbi_style";i:5;s:12:"jw_mbi_title";i:6;s:13:"jw_mbi_toggle";}s:9:"templates";a:1:{s:11:"skin_boards";a:1:{s:11:"hookMessage";s:11:"hookMessage";}}}]]></hook_extra_data>
+      <hook_key>jw_mbi</hook_key>
+      <hook_global_caches/>
+    </config>
+  </hookdata>
+  <hookfiles>
+    <file>
+      <hook_file_real>boardIndexMessage.php</hook_file_real>
+      <hook_type>templateHooks</hook_type>
+      <hook_classname>boardIndexMessage</hook_classname>
+      <hook_data><![CDATA[a:8:{s:12:"dataLocation";s:0:"";s:14:"libApplication";s:0:"";s:15:"classToOverload";s:0:"";s:9:"skinGroup";s:11:"skin_boards";s:12:"skinFunction";s:18:"boardIndexTemplate";s:4:"type";s:7:"foreach";s:2:"id";s:10:"categories";s:8:"position";s:9:"outer.pre";}]]></hook_data>
+      <hooks_source><![CDATA[<?php
+
+class boardIndexMessage
+{
+	public $registry;
+	
+	public function __construct()
+	{
+		$this->registry   =  ipsRegistry::instance();
+		$this->settings   =& $this->registry->fetchSettings();
+		$this->memberData =& $this->registry->member()->fetchMemberData();
+	}
+	
+	public function getOutput()
+	{
+		if
+		(
+			$this->settings['jw_mbi_message'] &&
+			in_array( $this->memberData['member_group_id'], explode( ",", $this->settings['jw_mbi_groups'] ) )
+		)
+		{
+			IPSText::getTextClass('bbcode')->parse_html    = 1;
+			IPSText::getTextClass('bbcode')->parse_nl2br   = $this->settings['jw_mbi_parse'];
+			IPSText::getTextClass('bbcode')->parse_smilies = 1;
+			IPSText::getTextClass('bbcode')->parse_bbcode  = 1;
+			
+			$jw_mbi_msg_pp = IPSText::getTextClass('bbcode')->preDisplayParse( IPSText::getTextClass('bbcode')->preDbParse( $this->settings['jw_mbi_message'] ) );
+			
+			$jw_mbi_msg = str_replace( '&lt;', '<', $jw_mbi_msg_pp );
+			
+			return $this->registry->output->getTemplate('boards')->hookMessage($jw_mbi_msg);
+		}
+		
+		return;
+	}
+}
+
+?>]]></hooks_source>
+    </file>
+  </hookfiles>
+  <hookextras_settings>
+    <setting>
+      <conf_is_title>1</conf_is_title>
+      <conf_title_title>(JW32) Message on Board Index</conf_title_title>
+      <conf_title_desc>Settings for (JW32) Message on Board Index</conf_title_desc>
+      <conf_title_noshow>0</conf_title_noshow>
+      <conf_title_keyword>jw_mbi</conf_title_keyword>
+      <conf_title_app>core</conf_title_app>
+      <conf_title_tab>Hooks</conf_title_tab>
+    </setting>
+    <setting>
+      <conf_id>300</conf_id>
+      <conf_title>Groups</conf_title>
+      <conf_description>Please specify which group(s) will be allowed to see the message</conf_description>
+      <conf_group>30</conf_group>
+      <conf_type>multi</conf_type>
+      <conf_key>jw_mbi_groups</conf_key>
+      <conf_value/>
+      <conf_default/>
+      <conf_extra>#show_groups#</conf_extra>
+      <conf_evalphp><![CDATA[if ( $save == 1)
+{
+	if ( is_array( $_POST['jw_mbi_groups'] ) )
+	{
+		$_POST['jw_mbi_groups'] = implode( ",", $_POST['jw_mbi_groups'] );
+	}
+	else
+	{
+		$_POST['jw_mbi_groups'] = "";
+	}
+	
+	$key = 'jw_mbi_groups';
+}
+if ( $show == 1 )
+{
+    $key='jw_mbi_groups[]';
+}]]></conf_evalphp>
+      <conf_protected>1</conf_protected>
+      <conf_position>1</conf_position>
+      <conf_start_group>Main settings</conf_start_group>
+      <conf_add_cache>1</conf_add_cache>
+      <conf_keywords/>
+      <conf_title_keyword>jw_mbi</conf_title_keyword>
+      <conf_is_title>0</conf_is_title>
+    </setting>
+    <setting>
+      <conf_id>301</conf_id>
+      <conf_title>Message</conf_title>
+      <conf_description>Enter message to display</conf_description>
+      <conf_group>30</conf_group>
+      <conf_type>editor</conf_type>
+      <conf_key>jw_mbi_message</conf_key>
+      <conf_value/>
+      <conf_default/>
+      <conf_extra/>
+      <conf_evalphp/>
+      <conf_protected>1</conf_protected>
+      <conf_position>6</conf_position>
+      <conf_start_group>Message</conf_start_group>
+      <conf_add_cache>1</conf_add_cache>
+      <conf_keywords/>
+      <conf_title_keyword>jw_mbi</conf_title_keyword>
+      <conf_is_title>0</conf_is_title>
+    </setting>
+    <setting>
+      <conf_id>302</conf_id>
+      <conf_title>Parse newlines in message?</conf_title>
+      <conf_description>Do you want to enable parsing newlines in message? You need to toggle this off if using HTML in message.</conf_description>
+      <conf_group>30</conf_group>
+      <conf_type>yes_no</conf_type>
+      <conf_key>jw_mbi_parse</conf_key>
+      <conf_value/>
+      <conf_default>1</conf_default>
+      <conf_extra/>
+      <conf_evalphp/>
+      <conf_protected>1</conf_protected>
+      <conf_position>5</conf_position>
+      <conf_start_group/>
+      <conf_add_cache>1</conf_add_cache>
+      <conf_keywords/>
+      <conf_title_keyword>jw_mbi</conf_title_keyword>
+      <conf_is_title>0</conf_is_title>
+    </setting>
+    <setting>
+      <conf_id>303</conf_id>
+      <conf_title>Position</conf_title>
+      <conf_description><![CDATA[Select where to display the message<br /><strong style="color:red">NOTE: Each time you change this setting you need to recache the skin sets in Look & Feel > Template Tools</strong>]]></conf_description>
+      <conf_group>30</conf_group>
+      <conf_type>dropdown</conf_type>
+      <conf_key>jw_mbi_position</conf_key>
+      <conf_value/>
+      <conf_default>2</conf_default>
+      <conf_extra>1=Top, full width&#13;
+2=Top, category width&#13;
+3=Bottom, category width&#13;
+4=Bottom, full width</conf_extra>
+      <conf_evalphp><![CDATA[if ( $save == 1 )
+{
+	if ( $_POST['jw_mbi_position'] == '1' )
+	{
+		$newHookData = 'a:8:{s:12:"dataLocation";s:0:"";s:14:"libApplication";s:0:"";s:15:"classToOverload";s:0:"";s:9:"skinGroup";s:11:"skin_boards";s:12:"skinFunction";s:18:"boardIndexTemplate";s:4:"type";s:2:"if";s:2:"id";s:13:"boardIndexTop";s:8:"position";s:10:"post.endif";}';
+	}
+	elseif ( $_POST['jw_mbi_position'] == '2' )
+	{
+		$newHookData = 'a:8:{s:12:"dataLocation";s:0:"";s:14:"libApplication";s:0:"";s:15:"classToOverload";s:0:"";s:9:"skinGroup";s:11:"skin_boards";s:12:"skinFunction";s:18:"boardIndexTemplate";s:4:"type";s:7:"foreach";s:2:"id";s:10:"categories";s:8:"position";s:9:"outer.pre";}';
+	}
+	elseif ( $_POST['jw_mbi_position'] == '3' )
+	{
+		$newHookData = 'a:8:{s:12:"dataLocation";s:0:"";s:14:"libApplication";s:0:"";s:15:"classToOverload";s:0:"";s:9:"skinGroup";s:11:"skin_boards";s:12:"skinFunction";s:18:"boardIndexTemplate";s:4:"type";s:7:"foreach";s:2:"id";s:10:"categories";s:8:"position";s:10:"outer.post";}';
+	}
+	else
+	{
+		$newHookData = 'a:8:{s:12:"dataLocation";s:0:"";s:14:"libApplication";s:0:"";s:15:"classToOverload";s:0:"";s:9:"skinGroup";s:11:"skin_boards";s:12:"skinFunction";s:18:"boardIndexTemplate";s:4:"type";s:2:"if";s:2:"id";s:10:"showTotals";s:8:"position";s:11:"pre.startif";}';
+	}
+	
+	$this->DB->update( 'core_hooks_files', array( 'hook_data' => $newHookData ), "hook_classname='boardIndexMessage'" );
+	
+	$this->cache->rebuildCache( 'hooks', 'global' );
+}]]></conf_evalphp>
+      <conf_protected>1</conf_protected>
+      <conf_position>2</conf_position>
+      <conf_start_group/>
+      <conf_add_cache>1</conf_add_cache>
+      <conf_keywords/>
+      <conf_title_keyword>jw_mbi</conf_title_keyword>
+      <conf_is_title>0</conf_is_title>
+    </setting>
+    <setting>
+      <conf_id>304</conf_id>
+      <conf_title>Message style</conf_title>
+      <conf_description>Select message style</conf_description>
+      <conf_group>30</conf_group>
+      <conf_type>dropdown</conf_type>
+      <conf_key>jw_mbi_style</conf_key>
+      <conf_value/>
+      <conf_default>1</conf_default>
+      <conf_extra>1=With frame and header&#13;
+2=With frame, without header&#13;
+3=Without frame and header</conf_extra>
+      <conf_evalphp/>
+      <conf_protected>1</conf_protected>
+      <conf_position>3</conf_position>
+      <conf_start_group/>
+      <conf_add_cache>1</conf_add_cache>
+      <conf_keywords/>
+      <conf_title_keyword>jw_mbi</conf_title_keyword>
+      <conf_is_title>0</conf_is_title>
+    </setting>
+    <setting>
+      <conf_id>305</conf_id>
+      <conf_title>Message title</conf_title>
+      <conf_description>Enter message title</conf_description>
+      <conf_group>30</conf_group>
+      <conf_type>input</conf_type>
+      <conf_key>jw_mbi_title</conf_key>
+      <conf_value/>
+      <conf_default/>
+      <conf_extra/>
+      <conf_evalphp/>
+      <conf_protected>1</conf_protected>
+      <conf_position>7</conf_position>
+      <conf_start_group/>
+      <conf_add_cache>1</conf_add_cache>
+      <conf_keywords/>
+      <conf_title_keyword>jw_mbi</conf_title_keyword>
+      <conf_is_title>0</conf_is_title>
+    </setting>
+    <setting>
+      <conf_id>306</conf_id>
+      <conf_title>Enable box toggling?</conf_title>
+      <conf_description>Allow users to toggle box with message?</conf_description>
+      <conf_group>30</conf_group>
+      <conf_type>yes_no</conf_type>
+      <conf_key>jw_mbi_toggle</conf_key>
+      <conf_value/>
+      <conf_default>1</conf_default>
+      <conf_extra/>
+      <conf_evalphp/>
+      <conf_protected>1</conf_protected>
+      <conf_position>4</conf_position>
+      <conf_start_group/>
+      <conf_add_cache>1</conf_add_cache>
+      <conf_keywords/>
+      <conf_title_keyword>jw_mbi</conf_title_keyword>
+      <conf_is_title>0</conf_is_title>
+    </setting>
+  </hookextras_settings>
+  <hookextras_language/>
+  <hookextras_modules/>
+  <hookextras_help/>
+  <hookextras_templates>
+    <templates>
+      <template_group>skin_boards</template_group>
+      <template_content><![CDATA[<div id='category_message' class='category_block block_wrap'>
+<if test="$this->settings['jw_mbi_style'] == 1">
+	<h3 class='maintitle'>
+		<if test="1:|:$this->settings['jw_mbi_toggle']">
+			<a class='toggle right' href='#' title="{$this->lang->words['toggle_cat']}">{$this->lang->words['toggle_cat']}</a>
+		</if>
+		{$this->settings['jw_mbi_title']}
+	</h3>
+	<div class='ipsBox table_wrap' style='cursor: help' title='(JW32) Message on Board Index 1.1.2'>
+		<div class='ipsBox_container' style='cursor:auto' title=' '>
+			<table class='ipb_table'>
+				<tr>
+					<td>
+					{$jw_mbi_msg}
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+<else />
+	<if test="$this->settings['jw_mbi_style'] == 2">
+		<div class='ipsBox table_wrap' style='cursor: help' title='(JW32) Message on Board Index 1.1.2'>
+			<div class='ipsBox_container' style='cursor:auto' title=' '>
+				<table class='ipb_table'>
+					<tr>
+						<td>
+						{$jw_mbi_msg}
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	<else />
+		{$jw_mbi_msg}
+	</if>
+</if>
+</div>
+<br />]]></template_content>
+      <template_name>hookMessage</template_name>
+      <template_data><![CDATA[$jw_mbi_msg]]></template_data>
+      <template_updated>1322492400</template_updated>
+      <template_removable>0</template_removable>
+      <template_added_to>0</template_added_to>
+      <template_user_added>1</template_user_added>
+      <template_user_edited>0</template_user_edited>
+      <template_master_key>root</template_master_key>
+    </templates>
+  </hookextras_templates>
+  <hookextras_css/>
+  <hookextras_tasks/>
+  <hookextras_database_create/>
+  <hookextras_database_alter/>
+  <hookextras_database_update/>
+  <hookextras_database_insert/>
+</hookexport>
