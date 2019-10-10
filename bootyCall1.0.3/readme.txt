@@ -1,0 +1,1 @@
+To upload this hook login to the ACP, go to manage hooks, click install hooks and upload the mention.xml file. 

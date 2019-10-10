@@ -1,0 +1,682 @@
+<?xml version="1.0" encoding="utf-8"?>
+<hookexport>
+  <hookdata>
+    <config>
+      <hook_name>Mentions</hook_name>
+      <hook_desc>Notifies members of posts they are mentioned in</hook_desc>
+      <hook_author>Rimi</hook_author>
+      <hook_email/>
+      <hook_website/>
+      <hook_update_check/>
+      <hook_requirements><![CDATA[a:3:{s:21:"required_applications";a:0:{}s:20:"hook_php_version_min";s:0:"";s:20:"hook_php_version_max";s:0:"";}]]></hook_requirements>
+      <hook_version_human>1.0.3</hook_version_human>
+      <hook_version_long>10003</hook_version_long>
+      <hook_extra_data><![CDATA[a:3:{s:7:"display";a:2:{s:8:"language";s:257:"From core_public_email_content: booty_call, booty_status_call, subject__booty_call, subject__booty_status_call<br />From core_public_usercp: notify__booty_call<br />From members_admin_member: notify__booty_call<br />From forums_public_topic: booty_call_link";s:8:"settings";s:25:"Setting groups: @Mentions";}s:8:"language";a:4:{s:25:"core_public_email_content";a:4:{i:0;s:10:"booty_call";i:1;s:17:"booty_status_call";i:2;s:19:"subject__booty_call";i:3;s:26:"subject__booty_status_call";}s:18:"core_public_usercp";a:1:{i:0;s:18:"notify__booty_call";}s:20:"members_admin_member";a:1:{i:0;s:18:"notify__booty_call";}s:19:"forums_public_topic";a:1:{i:0;s:15:"booty_call_link";}}s:13:"settingGroups";a:1:{i:0;s:16:"booty_call_group";}}]]></hook_extra_data>
+      <hook_key>mention</hook_key>
+      <hook_global_caches/>
+    </config>
+  </hookdata>
+  <hookfiles>
+    <file>
+      <hook_file_real>mentionNotification.php</hook_file_real>
+      <hook_type>libraryHooks</hook_type>
+      <hook_classname>mentionNotification</hook_classname>
+      <hook_data><![CDATA[a:8:{s:12:"dataLocation";s:0:"";s:14:"libApplication";s:6:"forums";s:15:"classToOverload";s:20:"forums_notifications";s:9:"skinGroup";N;s:12:"skinFunction";N;s:4:"type";N;s:2:"id";N;s:8:"position";N;}]]></hook_data>
+      <hooks_source><![CDATA[<?php
+
+
+class mentionNotification extends (~extends~)
+{
+	public function getConfiguration()
+	{
+		$_NOTIFY = parent::getConfiguration();
+
+		$_NOTIFY[] = array( 'key' => 'booty_call', 'default' => array( 'inline' ), 'disabled' => array( '' ), 'icon' => 'notify_newreply' );
+
+		return $_NOTIFY;
+	}
+}]]></hooks_source>
+    </file>
+    <file>
+      <hook_file_real>mentionStatus.php</hook_file_real>
+      <hook_type>libraryHooks</hook_type>
+      <hook_classname>mentionStatus</hook_classname>
+      <hook_data><![CDATA[a:8:{s:12:"dataLocation";s:0:"";s:14:"libApplication";s:4:"core";s:15:"classToOverload";s:12:"memberStatus";s:9:"skinGroup";N;s:12:"skinFunction";N;s:4:"type";N;s:2:"id";N;s:8:"position";N;}]]></hook_data>
+      <hooks_source><![CDATA[<?php
+
+class mentionStatus extends (~extends~)
+{
+	protected function _cleanContent( $content )
+	{
+		$original = parent::_parseContent( $content );
+		
+		$safeword = "/(?: ?){$this->settings['booty_call_character']}([^\s?!.,<]*)([?!.~:])?(?: ?)/i";
+		
+		if ( stristr( $original, $this->settings['booty_call_character'] ) )
+		{
+			preg_match_all( $safeword, $original, $whereMahPussyAt );
+			
+			$tooManyPussies = array_unique( $whereMahPussyAt[1] );
+			$boobies = '';
+			
+			foreach ( $tooManyPussies as $pussy )
+			{
+				$sand = stripos( $pussy, "'" );
+				if ( intval($sand) )
+				{
+					$pussy = substr( $pussy, 0, $sand );
+				}
+				if ( strlen( $pussy ) < 3 || empty( $pussy ) )
+				{
+					continue;
+				}
+				$boobies .= "members_display_name LIKE '" . $pussy . "%' OR members_display_name LIKE '" . $pussy . " %' OR " ;
+			}
+						
+			$boobies = substr( $boobies, 0, -4 );
+			
+			if( empty( $boobies ) )
+			{
+				return $original;
+			}
+			
+			$this->DB->build( array(
+										'select' => 'member_id, members_display_name, members_seo_name',
+										'from' => 'members',
+										'where' => $boobies,
+										'order' => 'members_display_name DESC'
+									) );
+			
+			$this->DB->execute();
+
+			$dicks = array();
+			while( $r = $this->DB->fetch() )
+			{
+				$dicks[] = $r;
+			}		
+			
+			if( is_array( $dicks ) && count( $dicks ) )
+			{
+				$tits = array();
+				foreach ( $dicks as $dick )
+				{
+					if ( $this->memberData['member_id'] == $dick['member_id'] )
+					{
+						continue; 
+					}
+					$nipples = $this->settings['booty_call_character'] . $dick['members_display_name'];
+					//$nipples = str_replace( "&#39;" , "'" , $nipples );
+					if( stristr ( $original, $nipples ) )
+					{
+						$url = $this->registry->output->buildSEOUrl( "showuser={$dick['member_id']}", 'public', $dick['members_seo_name'], "showuser" );
+						$link = "<a href='" . $url . "'>" . $dick['members_display_name'] . "</a>";
+						$original = str_ireplace( $nipples, "{$this->settings['booty_call_character']}{$link}", $original );
+						$tits[] = $dick['member_id'];
+					}
+					
+					
+				}
+				if ( is_array( $tits ) AND count( $tits ) )
+				{
+					$this->ass = array_unique( $tits );
+				}
+			}
+										
+			return $original;
+		}
+		else
+		{
+			return $original;
+		}		
+	}
+	
+	public function create( $author=null, $owner=null )
+	{
+		$data = parent::create( $author, $owner );
+		if ( $data )
+		{
+			$this->bootyCall( $data, $author );
+			return $data;
+		}
+		else
+		{
+			return $data;
+		}
+	}
+	
+	public function reply( $author=null, $status=null )
+	{
+		$data = parent::reply( $author, $status );
+		if ( $data )
+		{
+			$this->bootyCall( $data, $author, $status );
+			return $data;
+		}
+		else
+		{
+			return $data;
+		}
+	}	
+	
+	public function bootyCall( $fuck, $author, $status = null )
+	{
+		if ( !is_array( $this->ass ) || !count( $this->ass ) || !$this->memberData['member_id'] )
+		{
+			return;
+		}
+
+		$classToLoad		= IPSLib::loadLibrary( IPS_ROOT_PATH . '/sources/classes/member/notifications.php', 'notifications' );
+		$notifyLibrary		= new $classToLoad( $this->registry );
+
+		$whores = IPSMember::load( $this->ass, 'all' );
+		
+		if ( !$fuck['status_id'] )
+		{
+			$fuck['status_id'] = $fuck['reply_status_id'];
+			$fuck['status_content'] = $fuck['reply_content'];
+		}
+		foreach( $whores as $whore )
+		{
+			if ( $whore['member_id'] )
+			{
+				if ( $whore['ignored_users'] )
+				{
+					$bitch = @unserialize( $whore['ignored_users'] );
+					if ( $bitch[$this->memberData['member_id']]['ignore_topics'] )
+					{
+						continue; 
+					}
+				}
+					
+				$whore['language'] = $whore['language'] == "" ? IPSLib::getDefaultLanguage() : $whore['language'];
+				
+				IPSText::getTextClass('email')->setPlainTextTemplate( IPSText::getTextClass('email')->getTemplate( 'booty_status_call', $whore['language'] ) );
+				
+				IPSText::getTextClass('email')->buildMessage( array( 'MEMBER_NAME' => $this->memberData['members_display_name'], 'STATUS' => $fuck['status_content'] ) );
+		
+				$notifyLibrary->setMember( $whore );
+		
+				$notifyLibrary->setFrom( $this->memberData );
+		
+				$notifyLibrary->setNotificationKey( 'booty_call' );
+		
+				$notifyLibrary->setNotificationUrl( $this->registry->output->buildSEOUrl( 'app=members&amp;module=profile&amp;section=status&amp;type=single&amp;status_id=' . $fuck['status_id'], 'publicNoSession', array( $owner['member_id'], $owner['members_seo_name'] ), 'members_status_single' ) );
+		
+				$notifyLibrary->setNotificationText( IPSText::getTextClass('email')->getPlainTextContent() );
+		
+				$title	= sprintf( IPSText::getTextClass('email')->subject, $this->registry->output->buildSEOUrl( 'showuser=' . $this->memberData['member_id'], 'publicNoSession', $this->memberData['members_seo_name'], 'showuser' ), $this->memberData['members_display_name'], $this->registry->output->buildSEOUrl( 'app=members&amp;module=profile&amp;section=status&amp;type=single&amp;status_id=' . $fuck['status_id'], 'publicNoSession', array( $this->memberData['member_id'], $this->memberData['members_seo_name'] ), 'members_status_single' ) );
+				
+				$notifyLibrary->setNotificationTitle( $title );
+		
+				try
+				{
+					$notifyLibrary->sendNotification();
+				}
+				catch( Exception $e ){ }				
+
+			}
+		}		
+	}
+	
+}]]></hooks_source>
+    </file>
+    <file>
+      <hook_file_real>mentionBypass.php</hook_file_real>
+      <hook_type>libraryHooks</hook_type>
+      <hook_classname>mentionBypass</hook_classname>
+      <hook_data><![CDATA[a:8:{s:12:"dataLocation";s:0:"";s:14:"libApplication";s:4:"core";s:15:"classToOverload";s:13:"notifications";s:9:"skinGroup";N;s:12:"skinFunction";N;s:4:"type";N;s:2:"id";N;s:8:"position";N;}]]></hook_data>
+      <hooks_source><![CDATA[<?php
+
+class mentionBypass extends (~extends~)
+{
+	public function getMemberNotificationConfig( $member )
+	{
+		$return = parent::getMemberNotificationConfig( $member );
+
+		if( $this->settings['booty_call_bypass'] AND $this->request['area'] != 'notifications' )
+		{
+			$rape = array( 0 => 'inline' );
+			if ( is_array( $return['booty_call']['selected'] ) )
+			{
+				$return['booty_call']['selected'] = array_merge( $return['booty_call']['selected'], $rape );
+				$return['booty_call']['selected'] = array_unique( $return['booty_call']['selected'] );
+			}
+			else
+			{
+				$return['booty_call']['selected'] = $rape;
+			}
+			return $return;
+		}
+		else
+		{
+			return $return;
+		}
+	}
+}]]></hooks_source>
+    </file>
+    <file>
+      <hook_file_real>mention.php</hook_file_real>
+      <hook_type>libraryHooks</hook_type>
+      <hook_classname>mention</hook_classname>
+      <hook_data><![CDATA[a:8:{s:12:"dataLocation";s:0:"";s:14:"libApplication";s:6:"forums";s:15:"classToOverload";s:14:"classPostForms";s:9:"skinGroup";N;s:12:"skinFunction";N;s:4:"type";N;s:2:"id";N;s:8:"position";N;}]]></hook_data>
+      <hooks_source><![CDATA[<?php
+
+class mention extends (~extends~)
+{
+
+	public $ass;
+	
+	public function formatPost( $postContent )
+	{
+		$original = parent::formatPost( $postContent );
+
+		$safeword = "/(?: ?){$this->settings['booty_call_character']}([^\s?!.,<]*)([?!.~:])?(?: ?)/i";
+		
+		if ( stristr( $original, $this->settings['booty_call_character'] ) )
+		{
+			preg_match_all( $safeword, $original, $whereMahPussyAt );
+			
+			$tooManyPussies = array_unique( $whereMahPussyAt[1] );
+			$boobies = '';
+			
+			foreach ( $tooManyPussies as $pussy )
+			{
+				$sand = stripos( $pussy, "'" );
+				if ( intval($sand) )
+				{
+					$pussy = substr( $pussy, 0, $sand );
+				}
+				if ( strlen( $pussy ) < 3 || empty( $pussy ))
+				{
+					continue;
+				}
+				$boobies .= "members_display_name LIKE '" . $pussy . "%' OR members_display_name LIKE '" . $pussy . " %' OR " ;
+			}
+						
+			$boobies = substr( $boobies, 0, -4 );
+			
+			if ( empty( $boobies ) )
+			{
+				return $original;
+			}
+			
+			$this->DB->build( array(
+										'select' => 'member_id, members_display_name',
+										'from' => 'members',
+										'where' => $boobies,
+										'order' => 'members_display_name DESC'
+									) );
+			
+			$this->DB->execute();
+
+			$dicks = array();
+			while( $r = $this->DB->fetch() )
+			{
+				$dicks[] = $r;
+			}		
+			
+			if( is_array( $dicks ) && count( $dicks ) )
+			{
+				$tits = array();
+				foreach ( $dicks as $dick )
+				{
+					if ( $this->memberData['member_id'] == $dick['member_id'] )
+					{
+						continue; 
+					}
+					$nipples = $this->settings['booty_call_character'] . $dick['members_display_name'];
+					$nipples = str_replace( "&#39;" , "'" , $nipples );
+					if( stristr ( $original, $nipples ) )
+					{
+						$original = str_ireplace( $nipples, "{$this->settings['booty_call_character']}[member=\"{$dick['members_display_name']}\"]", $original );
+						$tits[] = $dick['member_id'];
+					}
+					
+					
+				}
+				if ( is_array( $tits ) AND count( $tits ) )
+				{
+					$this->ass = array_unique( $tits );
+				}
+			}
+										
+			return $original;
+		}
+		else
+		{
+			return $original;
+		}
+	}
+	
+	public function addReply()
+	{
+		if ( parent::getIsPreview() )
+		{
+			return parent::addReply();
+		}
+			
+		$return = parent::addReply();
+		
+		if ( $return )
+		{
+			$this->bootyCall( $this->getPostData() );
+		}
+		
+	}
+	
+	public function addTopic()
+	{
+		if ( parent::getIsPreview() )
+		{
+			return parent::addTopic();
+		}	
+	
+		$return = parent::addTopic();
+		
+		if ( $return )
+		{
+			$this->bootyCall( $this->getPostData() );
+		}
+
+	}
+	
+	public function editPost()
+	{
+		if ( parent::getIsPreview() )
+		{
+			return parent::editPost();
+		}
+		
+		$return = parent::editPost();
+		
+		if ( $return )
+		{
+			$this->bootyCall( $this->getPostData() );
+		}
+	}		
+	
+	public function bootyCall( $fuck )
+	{
+		if ( !is_array( $this->ass ) || !count( $this->ass ) || !$this->memberData['member_id'] )
+		{
+			return;
+		}
+		
+		$classToLoad		= IPSLib::loadLibrary( IPS_ROOT_PATH . '/sources/classes/member/notifications.php', 'notifications' );
+		$notifyLibrary		= new $classToLoad( $this->registry );
+
+		$topic = $this->registry->getClass('topics')->getTopicById( $fuck['topic_id'] );
+		
+		$whores = IPSMember::load( $this->ass, 'all' );
+
+		foreach( $whores as $whore )
+		{
+			if ( $whore['member_id'] && $this->registry->getClass('topics')->canView( $topic, $whore ) && !$fuck['queued'] )
+			{
+				if ( $whore['ignored_users'] )
+				{
+					$bitch = @unserialize( $whore['ignored_users'] );
+					if ( $bitch[$this->memberData['member_id']]['ignore_topics'] )
+					{
+						continue; 
+					}
+				}
+					
+				$whore['language'] = $whore['language'] == "" ? IPSLib::getDefaultLanguage() : $whore['language'];
+				
+				IPSText::getTextClass('email')->setPlainTextTemplate( IPSText::getTextClass('email')->getTemplate( 'booty_call', $whore['language'] ) );
+				
+				IPSText::getTextClass('email')->buildMessage( array( 'MEMBER_NAME' => $this->memberData['members_display_name'], 'POST_LINK' => $this->registry->output->buildSEOUrl( "showtopic={$fuck['topic_id']}&amp;view=findpost&amp;p={$fuck['pid']}", 'publicNoSession', $topic['title_seo'], 'showtopic' ), 'POST' => $fuck['post'] ) );
+		
+				$notifyLibrary->setMember( $whore );
+		
+				$notifyLibrary->setFrom( $this->memberData );
+		
+				$notifyLibrary->setNotificationKey( 'booty_call' );
+		
+				$notifyLibrary->setNotificationUrl( $this->registry->output->buildSEOUrl( "showtopic={$fuck['topic_id']}&amp;view=findpost&amp;p={$fuck['pid']}", 'publicNoSession', $topic['title_seo'], 'showtopic' ) );
+		
+				$notifyLibrary->setNotificationText( IPSText::getTextClass('email')->getPlainTextContent() );
+		
+				$title	= sprintf( IPSText::getTextClass('email')->subject, $this->registry->output->buildSEOUrl( 'showuser=' . $this->getAuthor('member_id'), 'publicNoSession', $this->getAuthor('members_seo_name'), 'showuser' ), $this->getAuthor('members_display_name'), $this->registry->output->buildSEOUrl( "showtopic={$fuck['topic_id']}&amp;view=findpost&amp;p={$fuck['pid']}", 'publicNoSession', $topic['title_seo'], 'showtopic' ) );
+				
+				$notifyLibrary->setNotificationTitle( $title );
+		
+				try
+				{
+					$notifyLibrary->sendNotification();
+				}
+				catch( Exception $e ){ }				
+
+			}
+		}		
+	}
+	
+}]]></hooks_source>
+    </file>
+    <file>
+      <hook_file_real>mentionLink.php</hook_file_real>
+      <hook_type>templateHooks</hook_type>
+      <hook_classname>mentionLink</hook_classname>
+      <hook_data><![CDATA[a:8:{s:12:"dataLocation";s:0:"";s:14:"libApplication";s:0:"";s:15:"classToOverload";s:0:"";s:9:"skinGroup";s:11:"skin_global";s:12:"skinFunction";s:12:"userInfoPane";s:4:"type";s:7:"foreach";s:2:"id";s:17:"customFieldsOuter";s:8:"position";s:9:"outer.pre";}]]></hook_data>
+      <hooks_source><![CDATA[<?php
+
+class mentionLink
+{
+	public function __construct()
+	{
+		$this->registry		=  ipsRegistry::instance();
+		$this->settings		=& $this->registry->fetchSettings();
+		$this->lang		=  $this->registry->getClass('class_localization');
+		$this->member		=  $this->registry->member();
+		$this->memberData	=& $this->registry->member()->fetchMemberData();
+		$this->request		=& $this->registry->fetchRequest();
+	}
+	
+	public function getOutput()
+	{
+		return;
+	}
+	
+	public function replaceOutput( $output, $key )
+	{
+		if ( !$this->settings['booty_call_display'] || !( $this->request['app'] == 'forums' && $this->request['module'] == 'forums' && $this->request['section'] == 'topics' ) )
+		{
+			return $output;
+		}
+		
+		if ( !$this->memberData['member_id'] )
+		{
+			return $output;
+		}
+		
+		/* Got some data? */
+		if ( is_array( $this->registry->output->getTemplate('global')->functionData['userInfoPane'] ) && count( $this->registry->output->getTemplate('global')->functionData['userInfoPane'] ) )
+		{
+			/* Init some vars */
+			$tag  = '<!--hook.' . $key . '-->';
+			$last = 0;
+			
+			/* Loop through each template call */
+			foreach ( $this->registry->output->getTemplate('global')->functionData['userInfoPane'] as $k => $v )
+			{
+				if( !$v['author']['member_id'] )
+				{
+					continue;	
+				}	
+							
+				$name = str_replace( "&#39;", "\\'", $v['author']['members_display_name'] );
+				/* See if we can find this hook point */
+				$pos = strpos( $output, $tag, $last );
+				
+				/* Found? */
+				if ( $pos !== FALSE )
+				{
+					/* Start swapping it out */
+					$string = "<li><a href=\"#\" onClick=\"ipb.textEditor.getEditor( ipb.textEditor.getCurrentEditorId() ).insert( '{$this->settings['booty_call_character']}{$name}' ); return false;\" title=\"{$this->settings['booty_call_character']}{$name}\">{$this->settings['booty_call_character']}{$this->lang->words['booty_call_link']}</a></li>";
+					$output = substr_replace( $output, $string . $tag, $pos, strlen( $tag ) ); 
+					$last   = $pos + strlen( $tag . $string );
+				}
+			}
+		}
+		
+		/* Return */
+		return $output;		
+	}
+}]]></hooks_source>
+    </file>
+  </hookfiles>
+  <hookextras_settings>
+    <setting>
+      <conf_is_title>1</conf_is_title>
+      <conf_title_title>@Mentions</conf_title_title>
+      <conf_title_desc>Configuration options for @mentions.</conf_title_desc>
+      <conf_title_noshow>0</conf_title_noshow>
+      <conf_title_keyword>booty_call_group</conf_title_keyword>
+      <conf_title_app>core</conf_title_app>
+      <conf_title_tab>Hooks</conf_title_tab>
+    </setting>
+    <setting>
+      <conf_id>447</conf_id>
+      <conf_title>Bypass User Configuration</conf_title>
+      <conf_description><![CDATA[Always sends an inline notification regardless of a user's configuration.]]></conf_description>
+      <conf_group>47</conf_group>
+      <conf_type>yes_no</conf_type>
+      <conf_key>booty_call_bypass</conf_key>
+      <conf_value/>
+      <conf_default/>
+      <conf_extra/>
+      <conf_evalphp/>
+      <conf_protected>1</conf_protected>
+      <conf_position>1</conf_position>
+      <conf_start_group/>
+      <conf_add_cache>1</conf_add_cache>
+      <conf_keywords/>
+      <conf_title_keyword>booty_call_group</conf_title_keyword>
+      <conf_is_title>0</conf_is_title>
+    </setting>
+    <setting>
+      <conf_id>449</conf_id>
+      <conf_title>Mention Character</conf_title>
+      <conf_description>The character to use for mentions.</conf_description>
+      <conf_group>47</conf_group>
+      <conf_type>input</conf_type>
+      <conf_key>booty_call_character</conf_key>
+      <conf_value/>
+      <conf_default>@</conf_default>
+      <conf_extra/>
+      <conf_evalphp><![CDATA[if ( $save == 1 )
+{
+	$_POST['booty_call_character'] = substr( $_POST['booty_call_character'], 0, 1 );
+}]]></conf_evalphp>
+      <conf_protected>1</conf_protected>
+      <conf_position>3</conf_position>
+      <conf_start_group/>
+      <conf_add_cache>1</conf_add_cache>
+      <conf_keywords/>
+      <conf_title_keyword>booty_call_group</conf_title_keyword>
+      <conf_is_title>0</conf_is_title>
+    </setting>
+    <setting>
+      <conf_id>448</conf_id>
+      <conf_title>Display @Mention Link</conf_title>
+      <conf_description>Displays a @mention link in the userinfopane for quick insertion into the editor.</conf_description>
+      <conf_group>47</conf_group>
+      <conf_type>yes_no</conf_type>
+      <conf_key>booty_call_display</conf_key>
+      <conf_value/>
+      <conf_default>1</conf_default>
+      <conf_extra/>
+      <conf_evalphp/>
+      <conf_protected>1</conf_protected>
+      <conf_position>2</conf_position>
+      <conf_start_group/>
+      <conf_add_cache>1</conf_add_cache>
+      <conf_keywords/>
+      <conf_title_keyword>booty_call_group</conf_title_keyword>
+      <conf_is_title>0</conf_is_title>
+    </setting>
+  </hookextras_settings>
+  <hookextras_language>
+    <language>
+      <word_app>core</word_app>
+      <word_pack>public_email_content</word_pack>
+      <word_key>subject__booty_status_call</word_key>
+      <word_default><![CDATA[<a href='%s'>%s</a> mentioned you in a <a href='%s'>status update</a>]]></word_default>
+    </language>
+    <language>
+      <word_app>core</word_app>
+      <word_pack>public_email_content</word_pack>
+      <word_key>subject__booty_call</word_key>
+      <word_default><![CDATA[<a href='%s'>%s</a> mentioned you in <a href='%s'>this post</a>]]></word_default>
+    </language>
+    <language>
+      <word_app>core</word_app>
+      <word_pack>public_email_content</word_pack>
+      <word_key>booty_status_call</word_key>
+      <word_default><![CDATA[<#MEMBER_NAME#> has mentioned you in a status update.
+
+----------------------------------
+<#STATUS#>
+----------------------------------
+
+If you no longer wish to receive notifications of status updates you are mentioned in, you can adjust your preferences on the
+community by clicking My Settings, and then choosing Notification Options.
+
+<#BOARD_ADDRESS#>
+
+]]></word_default>
+    </language>
+    <language>
+      <word_app>core</word_app>
+      <word_pack>public_email_content</word_pack>
+      <word_key>booty_call</word_key>
+      <word_default><![CDATA[Hello!
+
+This message is to notify you that <#MEMBER_NAME#> mentioned you in a post.
+
+The post that you were mentioned in can be found here:
+
+<#POST_LINK#>
+
+----------------------------------
+<#POST#>
+----------------------------------
+
+If you no longer wish to receive notifications of posts you are mentioned in, you can adjust your preferences on the
+community by clicking My Settings, and then choosing Notification Options.
+
+<#BOARD_ADDRESS#>
+
+]]></word_default>
+    </language>
+    <language>
+      <word_app>core</word_app>
+      <word_pack>public_usercp</word_pack>
+      <word_key>notify__booty_call</word_key>
+      <word_default>Notify me when someone mentions me in a post</word_default>
+    </language>
+    <language>
+      <word_app>members</word_app>
+      <word_pack>admin_member</word_pack>
+      <word_key>notify__booty_call</word_key>
+      <word_default>Notify me when someone mentions me in a post</word_default>
+    </language>
+    <language>
+      <word_app>forums</word_app>
+      <word_pack>public_topic</word_pack>
+      <word_key>booty_call_link</word_key>
+      <word_default>Mention</word_default>
+    </language>
+  </hookextras_language>
+  <hookextras_modules/>
+  <hookextras_help/>
+  <hookextras_templates/>
+  <hookextras_css/>
+  <hookextras_replacements/>
+  <hookextras_tasks/>
+  <hookextras_database_create/>
+  <hookextras_database_alter/>
+  <hookextras_database_update/>
+  <hookextras_database_insert/>
+</hookexport>
