@@ -1,0 +1,17 @@
+[16:22:53.658] Initializing OverLight Mod build 2
+[16:22:53.658] Compiled: May 20 2017 00:48:15 CL:1900
+[16:22:53.658] OS: Windows Version 6.1538.9200
+[16:22:53.699] SA:MP 0.3.7 was detected. g_dwSAMP_Addr: 0x05E60000
+[16:22:56.865] Could not find the speedometer files, disabling it.
+[16:23:14.939]  ---------------------------------------------------------------------
+[16:23:14.939]  OverLight Mod build 2 has crashed.
+[16:23:14.939]  Base address: 0x08750000, SA:MP base address: 0x05E60000
+[16:23:14.940]  Exception at address: 0x05EF924E, Last function processed: end of proxyIDirect3DDevice9::BeginScene()
+[16:23:14.940] Bot Thread: 
+[16:23:14.940]  Cause: EXCEPTION_ACCESS_VIOLATION
+[16:23:14.940]  Attempted to read from: 0x00000034
+[16:23:14.940]  EAX: 0x00000002 || ESI: 0x065b3d98
+[16:23:14.940]  EBX: 0x00000000 || EDI: 0x00000001
+[16:23:14.940]  ECX: 0x0177ff70 || EBP: 0x73e0dee0
+[16:23:14.940]  EDX: 0xbf800000 || ESP: 0x0177fd20
+[16:23:14.940]  ---------------------------------------------------------------------
