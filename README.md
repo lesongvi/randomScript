@@ -1,2 +1,2 @@
 # ss
-Game fun viết bằng python
+Random script, những thứ nhảm nhí và vớ vẩn của tôi (just for fun)
