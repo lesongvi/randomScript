@@ -24,15 +24,15 @@ class MaxMinesAPI {
 	}
 	
 	function api_request($url, bool $post, $context) {
-	    $curl = curl_init();
-	    curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_FAILONERROR, 1);
-        curl_setopt($curl, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36");
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER,1);
-        curl_setopt($curl, CURLOPT_POST, $post);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, $context);
-        $result = curl_exec($curl);
-        curl_close($curl);
-        return $result;
+	    	$curl = curl_init();
+		curl_setopt($curl, CURLOPT_URL, $url);
+		curl_setopt($curl, CURLOPT_FAILONERROR, 1);
+		curl_setopt($curl, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36");
+		curl_setopt($curl, CURLOPT_RETURNTRANSFER,1);
+		curl_setopt($curl, CURLOPT_POST, $post);
+		curl_setopt($curl, CURLOPT_POSTFIELDS, $context);
+		$result = curl_exec($curl);
+		curl_close($curl);
+		return $result;
 	}
 }
