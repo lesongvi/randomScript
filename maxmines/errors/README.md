@@ -1,5 +1,5 @@
 # Tổng hợp 1 số lỗi khi login vào MaxMines:  
-- ***MaxMines isn't using a secure connection to transfer information***
+- ~~~***MaxMines isn't using a secure connection to transfer information***~~~
 ```
 Kết nối không bảo mật. Sửa trên thanh địa chỉ http thành https (kết nối SSL) bảo mật là sẽ đăng nhập lại được
 ```
