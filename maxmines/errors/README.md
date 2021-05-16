@@ -1,5 +1,5 @@
 # Tổng hợp 1 số lỗi khi login vào MaxMines:  
-- ***MaxMines isn't using a secure connection to transfer information***
+- ~~***MaxMines isn't using a secure connection to transfer information***~~
 ```
 Kết nối không bảo mật. Sửa trên thanh địa chỉ http thành https (kết nối SSL) bảo mật là sẽ đăng nhập lại được
 ```
@@ -38,14 +38,19 @@ Tài khoản bạn đăng nhập đã được đăng ký trước tại MaxMine
 Vui lòng kiểm tra lại thư xác minh tài khoản trong email đăng ký của bạn.
 ```
 
-- ***Tài khoản này đang bị gắn cờ. Lý do: abcxyz***
+- ~~***Tài khoản này đang bị gắn cờ. Lý do: abcxyz***~~ (Với hệ thống mới, MaxMines không còn gắn cờ người dùng vì máy chủ bảo trì.)
 ```
 Nếu tài khoản có lý do là bảo trì máy chủ thì đó là do máy chủ đang bảo trì, nếu lý do khác thì bạn tự hiểu rồi nha :v
 ```
 
-- Lỗi màn hình trắng, treo đăng nhập
+- ~~***Lỗi màn hình trắng, treo đăng nhập***~~
 ```
 Vui lòng gửi email báo cáo cho mình nhé vi@rqn[.]com
+```
+
+- ***Lỗi các nút đăng nhập không phản hồi***
+```
+Có thể kết nối của bạn đang bị can thiệp bởi một bên khác không liên quan tới các bên MaxMines. Hãy thử reset modem, xóa lịch sử phiên hiện tại, quét virus sau đó đăng nhập lại.
 ```
 
 - Và một số lỗi khác ít xảy ra. Hãy sử dụng hỗ trợ của MaxMines nếu bạn cần trợ giúp!. 
