@@ -39,7 +39,7 @@ a = (() => {
         }, {
             qt: "Các ý kiến khác (Phần dành cho SV ghi nhận xét và đề xuất đối với môn học đang được đánh giá)",
             qa: "Không có ý kiến"
-        }], e = ["Đồng ý", "3", "Đại học", "ĐH/CĐ chính quy", ">= 70%"], n = /cauhoi(.*)dapan[0-9]/gm, a = document.getElementsByTagName("label"), i = 0, g = a.length; i < g; i++) {
+        }], e = ["Đồng ý", "3", "Đại học", "ĐH/CĐ chính quy", ">= 70%", "91-100%"], n = /cauhoi(.*)dapan[0-9]/gm, a = document.getElementsByTagName("label"), i = 0, g = a.length; i < g; i++) {
         if ((r = a[i]) && e.includes(r.innerText.trim())) {
             var c = r.getAttribute("for");
             if (m = document.getElementById(c)) {
