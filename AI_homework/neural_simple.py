@@ -1,3 +1,5 @@
+## Backup: https://notevn.com/simpleNeural
+
 J = True
 import numpy as A
 
