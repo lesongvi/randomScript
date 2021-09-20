@@ -3,7 +3,7 @@ const nsfsk = false;
 class PacketHook extends EventTarget {
   static get CONST() {
     return {
-      BUILD: "e3d53c9d36dec9698d026429d6d124a1b6369e0e",
+      BUILD: "ZTNkNTNjOWQzNmRlYzk2OThkMDI2NDI5ZDZkMTI0YTFiNjM2OWUwZQ==",
       SEND_PACKET_INDEX: 106,
       RECV_PACKET_INDEX: 403,
       MALLOC: "R",
