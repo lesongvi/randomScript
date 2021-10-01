@@ -1,14 +1,16 @@
+// https://debug.notevn.com/1904s
+
 const nsfsk = false;
 
 class PacketHook extends EventTarget {
   static get CONST() {
     return {
-      BUILD: "NmY3Yjk2YWE1MTFkYTNiYjRkZjRjZjAyNWI2NDA5ZTk3NDU5YTJlYw==",
-      SEND_PACKET_INDEX: 106,
-      RECV_PACKET_INDEX: 410,
+      BUILD: "MzIzYTM3YTFjMGRmMzhlOWFiMmUyNmRiYTVlYjFlYjU4NTUxNmEzNA==",
+      SEND_PACKET_INDEX: 105,
+      RECV_PACKET_INDEX: 447,
       MALLOC: "R",
-      FREE: "t",
-      SOCKET_PTR: 104288
+      FREE: "C",
+      SOCKET_PTR: 104704
     }
   }
 
