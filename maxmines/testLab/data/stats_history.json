@@ -1,0 +1,43 @@
+[
+	{
+		"secret": "AccOBJK46yeJo5AnD929qeMK7KyQBLK5JnrPJLwu",
+		"randomLoop": 3,
+		"errorMsg": null,
+		"statusCode": 200
+	},
+	{
+		"removeParams": ["secret"],
+		"errorMsg": "missing_input",
+		"statusCode": 400
+	},
+	{
+		"removeParams": ["begin"],
+		"errorMsg": "missing_input",
+		"statusCode": 400
+	},
+	{
+		"removeParams": ["end"],
+		"errorMsg": "missing_input",
+		"statusCode": 400
+	},
+	{
+		"secret": "z",
+		"errorMsg": "invalid_secret",
+		"statusCode": 400
+	},
+	{
+		"methodValue": "POST",
+		"errorMsg": "wrong_method",
+		"statusCode": 405
+	},
+	{
+		"begin_unixts": "-1",
+		"errorMsg": "invalid_timestamp",
+		"statusCode": 400
+	},
+	{
+		"end_unixts": "-1",
+		"errorMsg": "invalid_timestamp",
+		"statusCode": 400
+	}
+]

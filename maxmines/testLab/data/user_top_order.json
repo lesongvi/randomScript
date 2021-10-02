@@ -1,0 +1,66 @@
+[
+	{
+		"errorMsg": null,
+		"statusCode": 200
+	},
+	{
+		"count": 2,
+		"itemNum": 2,
+		"errorMsg": null,
+		"statusCode": 200
+	},
+	{
+		"count": -1,
+		"errorMsg": "invalid_amount",
+		"statusCode": 400
+	},
+	{
+		"secret": "z",
+		"errorMsg": "invalid_secret",
+		"statusCode": 400
+	},
+	{
+		"removeParams": ["secret"],
+		"errorMsg": "missing_input",
+		"statusCode": 400
+	},
+	{
+		"removeParams": ["count"],
+		"errorMsg": null,
+		"statusCode": 200
+	},
+	{
+		"removeParams": ["order"],
+		"errorMsg": null,
+		"statusCode": 200
+	},
+	{
+		"orderTest": {
+			"collection": ["total"],
+			"orders": ["asc"]
+		},
+		"errorMsg": null,
+		"statusCode": 200
+	},
+	{
+		"orderTest": {
+			"collection": ["balance"],
+			"orders": ["asc"]
+		},
+		"errorMsg": null,
+		"statusCode": 200
+	},
+	{
+		"orderTest": {
+			"collection": ["withdrawn"],
+			"orders": ["asc"]
+		},
+		"errorMsg": null,
+		"statusCode": 200
+	},
+	{
+		"methodValue": "POST",
+		"errorMsg": "wrong_method",
+		"statusCode": 405
+	}
+]

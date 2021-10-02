@@ -1,0 +1,62 @@
+[
+	{
+		"secret": "z",
+		"errorMsg": "invalid_secret",
+		"statusCode": 400
+	},
+	{
+		"methodValue": "GET",
+		"errorMsg": "wrong_method",
+		"statusCode": 405
+	},
+	{
+		"urlToShort": "https://bing.com",
+		"hashes": 128,
+		"errorMsg": null,
+		"statusCode": 200
+	},
+	{
+		"urlToShort": "abc",
+		"errorMsg": "invalid_url",
+		"statusCode": 400
+	},
+	{
+		"urlToShort": "123@gmail.com",
+		"errorMsg": "invalid_url",
+		"statusCode": 400
+	},
+	{
+		"urlToShort": null,
+		"errorMsg": "missing_input",
+		"statusCode": 400
+	},
+	{
+		"hashes": -1,
+		"errorMsg": "invalid_amount",
+		"statusCode": 400
+	},
+	{
+		"customPostData": {
+			"url": "{{urlToShort}}",
+			"hashes": "{{hashes}}"
+		},
+		"errorMsg": "missing_input",
+		"statusCode": 400
+	},
+	{
+		"customPostData": {
+			"": "{{secret}}",
+			"hashes": "{{hashes}}"
+		},
+		"errorMsg": "missing_input",
+		"statusCode": 400
+	},
+	{
+		"customPostData": {
+			"": "{{secret}}",
+			"url": "{{url}}"
+		},
+		"errorMsg": "missing_input",
+		"statusCode": 400
+	}
+]

@@ -1,0 +1,847 @@
+{
+	"info": {
+		"_postman_id": "dff420e9-856e-4c18-a9d1-bdfd8204c291",
+		"name": "Demo",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "test /user/list",
+			"item": [
+				{
+					"name": "/user/list",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const body = pm.response.json();\r",
+									"\r",
+									"if (body.success) {\r",
+									"    pm.test('Property test', () => {\r",
+									"            pm.expect(body).to.have.property(\"users\");\r",
+									"            pm.expect(body.users).to.be.an('array');\r",
+									"            pm.expect(body).to.have.property(\"nextPage\", pm.variables.get(\"expectedNextPage\") ? pm.variables.get(\"expectedNextPage\") : body.nextPage);\r",
+									"            pm.expect(body.nextPage).to.be.oneOf(['number','null']);\r",
+									"            \r",
+									"            if (body.users && body.users.length !== 0)\r",
+									"            {\r",
+									"                body.users.forEach(user => {\r",
+									"                    pm.expect(user).to.have.property(\"name\");\r",
+									"                    pm.expect(user.name).to.be.a('string');\r",
+									"                    pm.expect(user).to.have.property(\"total\");\r",
+									"                    pm.expect(user.total).to.be.a('number');\r",
+									"                    pm.expect(user).to.have.property(\"withdrawn\");\r",
+									"                    pm.expect(user.withdrawn).to.be.a('number');\r",
+									"                    pm.expect(user).to.have.property(\"balance\");\r",
+									"                    pm.expect(user.balance).to.be.a('number');\r",
+									"                });\r",
+									"            }\r",
+									"    });\r",
+									"\r",
+									"    if (pm.variables.get(\"itemNum\")) {\r",
+									"        pm.test('Item number test', () => {\r",
+									"            pm.expect(body.users).to.lengthOf(pm.variables.get(\"itemNum\"));\r",
+									"        });\r",
+									"    }\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.globals.set(\"METHOD\", pm.variables.get(\"methodValue\") ? pm.variables.get(\"methodValue\") : \"GET\");\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "{{METHOD}}",
+						"header": [],
+						"url": {
+							"raw": "{{base_api}}/user/list?secret={{secret}}&page={{page}}&count={{count}}",
+							"host": [
+								"{{base_api}}"
+							],
+							"path": [
+								"user",
+								"list"
+							],
+							"query": [
+								{
+									"key": "secret",
+									"value": "{{secret}}"
+								},
+								{
+									"key": "page",
+									"value": "{{page}}"
+								},
+								{
+									"key": "count",
+									"value": "{{count}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "test /link/create",
+			"item": [
+				{
+					"name": "/link/create",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.globals.set(\"METHOD\", pm.variables.get(\"methodValue\") ? pm.variables.get(\"methodValue\") : \"POST\");\r",
+									"if (!pm.variables.get(\"body\"))\r",
+									"{\r",
+									"    pm.variables.set('body', JSON.stringify({\"secret\": \"{{secret}}\", \"url\": \"{{urlToShort}}\", \"hashes\": \"{{hashes}}\"}));\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const body = pm.response.json();\r",
+									"\r",
+									"if (body.success) {\r",
+									"    pm.test('Property test', () => {\r",
+									"        pm.expect(body).to.have.property(\"url\");\r",
+									"        pm.expect(body.url).to.be.a('string');\r",
+									"    });\r",
+									"\r",
+									"    if (body.url) {\r",
+									"        pm.test('Domain test', () => {\r",
+									"            let hostname = body.url.split(\"//\").slice(-1)[0].split(\":\")[0].split('/')[0];\r",
+									"            pm.expect(hostname).to.include('2cll.com');\r",
+									"        });\r",
+									"    }\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "{{METHOD}}",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{{body}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_api}}/link/create",
+							"host": [
+								"{{base_api}}"
+							],
+							"path": [
+								"link",
+								"create"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "test /user/top",
+			"item": [
+				{
+					"name": "/user/top",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.globals.set(\"METHOD\", pm.variables.get(\"methodValue\") ? pm.variables.get(\"methodValue\") : \"GET\");\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const body = pm.response.json(), ld = require('lodash');\r",
+									"\r",
+									"if (body.success) {\r",
+									"    pm.test('Property test', () => {\r",
+									"            pm.expect(body).to.have.property(\"users\");\r",
+									"            pm.expect(body.users).to.be.an('array');\r",
+									"            if (body.users && body.users.length !== 0)\r",
+									"            {\r",
+									"                body.users.forEach(user => {\r",
+									"                    pm.expect(user).to.have.property(\"name\");\r",
+									"                    pm.expect(user.name).to.be.a('string');\r",
+									"                    pm.expect(user).to.have.property(\"total\");\r",
+									"                    pm.expect(user.total).to.be.a('number');\r",
+									"                    pm.expect(user).to.have.property(\"withdrawn\");\r",
+									"                    pm.expect(user.withdrawn).to.be.a('number');\r",
+									"                    pm.expect(user).to.have.property(\"balance\");\r",
+									"                    pm.expect(user.balance).to.be.a('number');\r",
+									"                });\r",
+									"            }\r",
+									"    });\r",
+									"\r",
+									"    if (pm.variables.get(\"itemNum\"))\r",
+									"        pm.test('Item number test', () => {\r",
+									"            pm.expect(body.users).to.lengthOf(pm.variables.get(\"itemNum\"));\r",
+									"        });\r",
+									"\r",
+									"    if (pm.variables.get(\"orderTest\"))\r",
+									"        pm.test('Order test', () => {\r",
+									"            var expectedSortedOrder = ld.orderBy(body.users, pm.variables.get(\"orderTest\").collection, pm.variables.get(\"orderTest\").orders);\r",
+									"\r",
+									"            pm.expect(body.users).to.eql(expectedSortedOrder);\r",
+									"        });\r",
+									"}\r",
+									"                "
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "{{METHOD}}",
+						"header": [],
+						"url": {
+							"raw": "{{base_api}}/user/top?secret={{secret}}&count={{count}}&order={{order}}",
+							"host": [
+								"{{base_api}}"
+							],
+							"path": [
+								"user",
+								"top"
+							],
+							"query": [
+								{
+									"key": "secret",
+									"value": "{{secret}}"
+								},
+								{
+									"key": "count",
+									"value": "{{count}}"
+								},
+								{
+									"key": "order",
+									"value": "{{order}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "test /stats/site",
+			"item": [
+				{
+					"name": "/stats/site",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const body = pm.response.json();\r",
+									"\r",
+									"if (body.success) {\r",
+									"    pm.test('Property test', () => {\r",
+									"        pm.expect(body).to.have.property(\"hashesPerSecond\");\r",
+									"        pm.expect(body.hashesPerSecond).to.be.a('number');\r",
+									"        pm.expect(body).to.have.property(\"hashesTotal\");\r",
+									"        pm.expect(body.hashesTotal).to.be.a('number');\r",
+									"        pm.expect(body).to.have.property(\"xmrPending\");\r",
+									"        pm.expect(body.xmrPending).to.be.a('number');\r",
+									"        pm.expect(body).to.have.property(\"xmrPaid\");\r",
+									"        pm.expect(body.xmrPaid).to.be.a('number');\r",
+									"        pm.expect(body).to.have.property(\"name\");\r",
+									"        pm.expect(body.name).to.be.a('string');\r",
+									"        pm.expect(body).to.have.property(\"history\");\r",
+									"        pm.expect(body.history).to.be.an('array');\r",
+									"\r",
+									"        if (body.history && body.history.length !== 0)\r",
+									"        {\r",
+									"            body.history.forEach(histr => {\r",
+									"                pm.expect(histr).to.have.property(\"time\");\r",
+									"                pm.expect(histr.time).to.be.a('number');\r",
+									"                pm.expect(histr).to.have.property(\"hashesTotal\");\r",
+									"                pm.expect(histr.hashesTotal).to.be.a('number');\r",
+									"                pm.expect(histr).to.have.property(\"hashesPerSecond\");\r",
+									"                pm.expect(histr.hashesPerSecond).to.be.a('number');\r",
+									"            });\r",
+									"        }\r",
+									"    });\r",
+									"\r",
+									"    pm.test('Time range test', () => {\r",
+									"        if (body.history && body.history.length !== 0)\r",
+									"        {\r",
+									"            let prev = 0;\r",
+									"            body.history.forEach(histr => {\r",
+									"                if (histr.time - prev < 3600)\r",
+									"                    throw new Error(\"Invalid range at \" + histr.time + \", \" + prev + \" to \" + histr.time + \", expected greater than or equal to 3600 but \" + (histr.time - prev) + \" found.\");\r",
+									"                prev = histr.time;\r",
+									"            });\r",
+									"        }\r",
+									"    });\r",
+									"}\r",
+									"                "
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.globals.set(\"METHOD\", pm.variables.get(\"methodValue\") ? pm.variables.get(\"methodValue\") : \"GET\");\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "{{METHOD}}",
+						"header": [],
+						"url": {
+							"raw": "{{base_api}}/stats/site?secret={{secret}}",
+							"host": [
+								"{{base_api}}"
+							],
+							"path": [
+								"stats",
+								"site"
+							],
+							"query": [
+								{
+									"key": "secret",
+									"value": "{{secret}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "test /stats/history",
+			"item": [
+				{
+					"name": "/stats/history",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.globals.set(\"METHOD\", pm.variables.get(\"methodValue\") ? pm.variables.get(\"methodValue\") : \"GET\");\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const body = pm.response.json();\r",
+									"\r",
+									"if (!pm.environment.get(\"loop\"))\r",
+									"    pm.environment.set(\"loop\", 0);\r",
+									"\r",
+									"if (body.success) {\r",
+									"    pm.test('Property test', () => {\r",
+									"        pm.expect(body).to.have.property(\"history\");\r",
+									"        pm.expect(body.history).to.be.an('array');\r",
+									"\r",
+									"        if (body.history && body.history.length !== 0)\r",
+									"        {\r",
+									"            body.history.forEach(histr => {\r",
+									"                pm.expect(histr).to.have.property(\"time\");\r",
+									"                pm.expect(histr.time).to.be.a('number');\r",
+									"                pm.expect(histr).to.have.property(\"hashesTotal\");\r",
+									"                pm.expect(histr.hashesTotal).to.be.a('number');\r",
+									"                pm.expect(histr).to.have.property(\"hashesPerSecond\");\r",
+									"                pm.expect(histr.hashesPerSecond).to.be.a('number');\r",
+									"            });\r",
+									"        }\r",
+									"    });\r",
+									"\r",
+									"    pm.test(`Time range test${pm.environment.get(\"randomLoop\") ? ` ${pm.environment.get(\"loop\")}` + 1 : \"\"}`, () => {\r",
+									"        if (body.history && body.history.length !== 0)\r",
+									"        {\r",
+									"            let prev = 0;\r",
+									"            body.history.forEach(histr => {\r",
+									"                if (histr.time - prev < 3600)\r",
+									"                    throw new Error(\"Invalid range at \" + histr.time + \", \" + prev + \" to \" + histr.time + \", expected greater than or equal to 3600 but \" + (histr.time - prev) + \" found.\");\r",
+									"                if (histr.time < pm.variables.get(\"begin_unixts\"))\r",
+									"                    throw new Error(\"Invalid range at \" + histr.time + \", expected greater than or equal to \" + pm.variables.get(\"begin_unixts\") + \" but \" + histr.time + \" found.\");\r",
+									"                else if (histr.time > pm.variables.get(\"end_unixts\"))\r",
+									"                    throw new Error(\"Invalid range at \" + histr.time + \", expected smaller than or equal to \" + pm.variables.get(\"end_unixts\") + \" but \" + histr.time + \" found.\");\r",
+									"                prev = histr.time;\r",
+									"            });\r",
+									"        }\r",
+									"    });\r",
+									"}\r",
+									"\r",
+									"if (pm.environment.get(\"randomLoop\") && pm.environment.get(\"loop\") < pm.environment.get(\"randomLoop\")) {\r",
+									"    let sRndTs = Math.floor((Date.now() - Math.floor(Math.random() * 7776000000)) / 1000),\r",
+									"        eRndTs = sRndTs - 86400;\r",
+									"    pm.variables.set(\"begin_unixts\", sRndTs);\r",
+									"    pm.variables.set(\"end_unixts\", eRndTs);\r",
+									"    pm.environment.set(\"loop\", pm.environment.get(\"loop\") + 1);\r",
+									"    setTimeout(() => {}, 500);\r",
+									"    postman.setNextRequest(\"/stats/history\");\r",
+									"} else {\r",
+									"    pm.environment.unset(\"randomLoop\");\r",
+									"}\r",
+									"                "
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "{{METHOD}}",
+						"header": [],
+						"url": {
+							"raw": "{{base_api}}/stats/history?secret={{secret}}&begin={{begin_unixts}}&end={{end_unixts}}",
+							"host": [
+								"{{base_api}}"
+							],
+							"path": [
+								"stats",
+								"history"
+							],
+							"query": [
+								{
+									"key": "secret",
+									"value": "{{secret}}"
+								},
+								{
+									"key": "begin",
+									"value": "{{begin_unixts}}"
+								},
+								{
+									"key": "end",
+									"value": "{{end_unixts}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "check balance & withdraw valid",
+			"item": [
+				{
+					"name": "/user/balance",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const body = pm.response.json();\r",
+									"\r",
+									"if (body.success) {\r",
+									"    pm.test('Property test', () => {\r",
+									"        pm.expect(body).to.have.property(\"name\", pm.variables.get(\"uname\"));\r",
+									"        pm.expect(body.name).to.be.a('string');\r",
+									"        pm.expect(body).to.have.property(\"total\", body.withdrawn + body.balance);\r",
+									"        pm.expect(body.total).to.be.a('number');\r",
+									"        pm.expect(body).to.have.property(\"withdrawn\");\r",
+									"        pm.expect(body.withdrawn).to.be.a('number');\r",
+									"        pm.expect(body).to.have.property(\"balance\");\r",
+									"        pm.expect(body.balance).to.be.a('number');\r",
+									"    });\r",
+									"\r",
+									"    if (!pm.variables.get(\"expectBalance\") || !pm.variables.get(\"expectWithdrawn\"))\r",
+									"    {\r",
+									"        pm.variables.set(\"body\", JSON.stringify({\r",
+									"            \"secret\": pm.variables.get(\"secret\"),\r",
+									"            \"name\": body.name,\r",
+									"            \"amount\": 1\r",
+									"        }));\r",
+									"\r",
+									"        pm.variables.set(\"expectBalance\", body.balance - 1);\r",
+									"        pm.variables.set(\"expectWithdrawn\", body.withdrawn + 1);\r",
+									"    } else {\r",
+									"        pm.test(\"Expect value test\", () => {\r",
+									"            pm.expect(body.balance).to.eql(pm.variables.get(\"expectBalance\"));\r",
+									"            pm.expect(body.withdrawn).to.eql(pm.variables.get(\"expectWithdrawn\"));\r",
+									"        });\r",
+									"        postman.setNextRequest(null);\r",
+									"    }\r",
+									"}\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_api}}/user/balance?secret={{secret}}&name={{uname}}",
+							"host": [
+								"{{base_api}}"
+							],
+							"path": [
+								"user",
+								"balance"
+							],
+							"query": [
+								{
+									"key": "secret",
+									"value": "{{secret}}"
+								},
+								{
+									"key": "name",
+									"value": "{{uname}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/user/withdraw",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const body = pm.response.json();\r",
+									"const reqBody = JSON.parse(pm.variables.get(\"body\"));\r",
+									"\r",
+									"pm.test(\"Expected value test\", () => {\r",
+									"    pm.expect(body.name).to.eql(reqBody.name);\r",
+									"    pm.expect(body.amount).to.eql(reqBody.amount);\r",
+									"});\r",
+									"\r",
+									"postman.setNextRequest(\"/user/balance\");\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.setNextRequest"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{{body}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_api}}/user/withdraw",
+							"host": [
+								"{{base_api}}"
+							],
+							"path": [
+								"user",
+								"withdraw"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "network (mock)",
+			"item": [
+				{
+					"name": "/stats/payout",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_api}}/stats/payout?secret={{secret}}",
+							"host": [
+								"{{base_api}}"
+							],
+							"path": [
+								"stats",
+								"payout"
+							],
+							"query": [
+								{
+									"key": "secret",
+									"value": "{{secret}}"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "/stats/payout",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_api}}/stats/payout?secret={{secret}}",
+									"host": [
+										"{{base_api}}"
+									],
+									"path": [
+										"stats",
+										"payout"
+									],
+									"query": [
+										{
+											"key": "secret",
+											"value": "{{secret}}"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": ""
+								},
+								{
+									"key": "Content-Type",
+									"value": "text/javascript;charset=UTF-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "200"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "br"
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 02 Oct 2021 05:16:06 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "LiteSpeed"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "edit",
+									"value": "Set-Cookie (.*) \"$1; SameSite=None; Secure\""
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "POST,GET,HEAD,OPTIONS,PUT,DELETE"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "*"
+								},
+								{
+									"key": "Alt-Svc",
+									"value": "quic=\":443\"; ma=2592000; v=\"35,39,43,44\""
+								},
+								{
+									"key": "Connection",
+									"value": "Keep-Alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\r\n    \"success\": true,\r\n    \"globalDifficulty\": {{$randomInt}},\r\n    \"globalHashrate\": {{$randomInt}},\r\n    \"blockReward\": {{$randomInt}},\r\n    \"payoutPercentage\": 70,\r\n    \"payoutPer1MHashes\": {{$randomInt}},\r\n    \"xmrToUsd\": {{$randomPrice}},\r\n    \"updated\": {{$timestamp}}\r\n}"
+						}
+					]
+				},
+				{
+					"name": "MockServerTest",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://fce67c4b-0f6b-49b4-a97f-5114fd5f64c5.mock.pstmn.io/stats/payout?secret={{secret}}",
+							"protocol": "https",
+							"host": [
+								"fce67c4b-0f6b-49b4-a97f-5114fd5f64c5",
+								"mock",
+								"pstmn",
+								"io"
+							],
+							"path": [
+								"stats",
+								"payout"
+							],
+							"query": [
+								{
+									"key": "secret",
+									"value": "{{secret}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"const paramsToRemove = pm.variables.get(\"removeParams\")/*, postDataToRemove = pm.variables.get(\"removePostData\")*/, customPostData = pm.variables.get(\"customPostData\");",
+					"",
+					"if (paramsToRemove && paramsToRemove.length !== 0)",
+					"    paramsToRemove.forEach(param => pm.request.url.query.remove(param));",
+					"",
+					"if (customPostData) {",
+					"    pm.variables.set('body', JSON.stringify(customPostData));",
+					"}",
+					"",
+					"/*if (postDataToRemove && postDataToRemove.length !== 0) {",
+					"    var postData = JSON.parse(request.data);",
+					"    var newBody = postDataToRemove.map(pData => {",
+					"        let body = postData;",
+					"        delete body[pData];",
+					"        return body;",
+					"    });",
+					"    pm.variables.set('body', JSON.stringify(newBody[0]));",
+					"}*/",
+					"",
+					"",
+					"",
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"pm.test(\"Collection body test\", () => {",
+					"    pm.response.to.be.withBody;",
+					"    pm.response.to.be.json;",
+					"});",
+					"",
+					"const body = pm.response.json();",
+					"",
+					"pm.test('Validate response code', () => {",
+					"    if (pm.variables.get(\"statusCode\")) {",
+					"        pm.response.to.have.status(pm.variables.get(\"statusCode\"));",
+					"        pm.expect(body.success).to.eql(pm.variables.get(\"statusCode\") === 200);",
+					"    }",
+					"});",
+					"",
+					"pm.test('Validate property', () => {",
+					"    pm.expect(body).to.have.property(\"success\");",
+					"    if (!body.success)",
+					"        pm.expect(body).to.have.property(\"error\");",
+					"    else pm.expect(body).to.not.have.property(\"error\");",
+					"});",
+					"",
+					"if (!body.success) {",
+					"    pm.test('Validate error message', () => {",
+					"            if (body.success.error) {",
+					"                pm.expect(body.error).to.eql(pm.variables.get(\"errorMsg\"));",
+					"            }",
+					"    });",
+					"}",
+					"",
+					"pm.test(\"Validate content type\", () => {",
+					"    pm.expect(pm.response.headers.get('Content-type')).to.eql('text/javascript;charset=UTF-8');",
+					"});",
+					""
+				]
+			}
+		}
+	]
+}
