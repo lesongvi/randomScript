@@ -22,7 +22,7 @@
 									"            pm.expect(body).to.have.property(\"users\");\r",
 									"            pm.expect(body.users).to.be.an('array');\r",
 									"            pm.expect(body).to.have.property(\"nextPage\", pm.variables.get(\"expectedNextPage\") ? pm.variables.get(\"expectedNextPage\") : body.nextPage);\r",
-									"            pm.expect(body.nextPage).to.be.oneOf(['number','null']);\r",
+									"            pm.expect(typeof body.nextPage).to.be.oneOf(['number','object']);\r",
 									"            \r",
 									"            if (body.users && body.users.length !== 0)\r",
 									"            {\r",

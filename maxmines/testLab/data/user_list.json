@@ -10,13 +10,7 @@
 	},
 	{
 		"page": 2,
-		"expectedNextPage": 3,
-		"errorMsg": null,
-		"statusCode": 200
-	},
-	{
-		"page": 1,
-		"expectedNextPage": 2,
+		"expectedNextPage": null,
 		"errorMsg": null,
 		"statusCode": 200
 	},

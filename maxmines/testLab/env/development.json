@@ -1,0 +1,99 @@
+{
+	"id": "d9e9e58f-dcf6-4424-8f77-9cb6f1e60870",
+	"name": "development",
+	"values": [
+		{
+			"key": "secret",
+			"value": "1ZFrVNwHxWd4HxKfYx3kffVoNOnYFqBqxMN5rS4s",
+			"enabled": true
+		},
+		{
+			"key": "uname",
+			"value": "test1",
+			"enabled": true
+		},
+		{
+			"key": "testToken",
+			"value": "6YCZHnPfpJdeTTn3I6TnO8omIkyd1NA1rF9j3RKs0hrMbWUnjhdkkqXs3l0k0vwi",
+			"enabled": true
+		},
+		{
+			"key": "tokenHashTarget",
+			"value": "128",
+			"enabled": true
+		},
+		{
+			"key": "withdrawAmount",
+			"value": "5",
+			"enabled": true
+		},
+		{
+			"key": "page",
+			"value": "1",
+			"enabled": true
+		},
+		{
+			"key": "base_api",
+			"value": "https://api.maxmines.com",
+			"enabled": true
+		},
+		{
+			"key": "errorMsg",
+			"value": "",
+			"enabled": true
+		},
+		{
+			"key": "statusCode",
+			"value": "",
+			"enabled": true
+		},
+		{
+			"key": "count",
+			"value": "1",
+			"enabled": true
+		},
+		{
+			"key": "removeParams",
+			"value": "",
+			"enabled": true
+		},
+		{
+			"key": "itemNum",
+			"value": "",
+			"enabled": true
+		},
+		{
+			"key": "urlToShort",
+			"value": "https://google.com",
+			"enabled": true
+		},
+		{
+			"key": "hashes",
+			"value": "128",
+			"enabled": true
+		},
+		{
+			"key": "methodValue",
+			"value": "",
+			"enabled": true
+		},
+		{
+			"key": "order",
+			"value": "total",
+			"enabled": true
+		},
+		{
+			"key": "begin_unixts",
+			"value": "0",
+			"enabled": true
+		},
+		{
+			"key": "end_unixts",
+			"value": "9999999999",
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2021-10-02T13:53:50.490Z",
+	"_postman_exported_using": "Postman/9.0.5"
+}
