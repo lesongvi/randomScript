@@ -4,10 +4,15 @@
 		"statusCode": 200
 	},
 	{
-		"count": 2,
-		"itemNum": 2,
+		"count": 12,
+		"itemNum": 12,
 		"errorMsg": null,
 		"statusCode": 200
+	},
+	{
+		"count": 1025,
+		"errorMsg": "invalid_amount",
+		"statusCode": 400
 	},
 	{
 		"count": -1,
@@ -37,7 +42,7 @@
 	{
 		"orderTest": {
 			"collection": ["total"],
-			"orders": ["asc"]
+			"orders": ["desc"]
 		},
 		"errorMsg": null,
 		"statusCode": 200
@@ -45,7 +50,7 @@
 	{
 		"orderTest": {
 			"collection": ["balance"],
-			"orders": ["asc"]
+			"orders": ["desc"]
 		},
 		"errorMsg": null,
 		"statusCode": 200
@@ -53,7 +58,7 @@
 	{
 		"orderTest": {
 			"collection": ["withdrawn"],
-			"orders": ["asc"]
+			"orders": ["desc"]
 		},
 		"errorMsg": null,
 		"statusCode": 200

@@ -45,7 +45,7 @@
 	},
 	{
 		"customPostData": {
-			"": "{{secret}}",
+			"secret": "{{secret}}",
 			"hashes": "{{hashes}}"
 		},
 		"errorMsg": "missing_input",
@@ -53,8 +53,8 @@
 	},
 	{
 		"customPostData": {
-			"": "{{secret}}",
-			"url": "{{url}}"
+			"secret": "{{secret}}",
+			"url": "{{urlToShort}}"
 		},
 		"errorMsg": "missing_input",
 		"statusCode": 400

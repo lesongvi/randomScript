@@ -39,5 +39,17 @@
 		"end_unixts": "-1",
 		"errorMsg": "invalid_timestamp",
 		"statusCode": 400
+	},
+	{
+		"begin_unixts": "1633410421",
+		"end_unixts": "1633410421",
+		"errorMsg": "invalid_timestamp",
+		"statusCode": 400
+	},
+	{
+		"begin_unixts": "1633410421",
+		"end_unixts": "1000",
+		"errorMsg": "invalid_timestamp",
+		"statusCode": 400
 	}
 ]

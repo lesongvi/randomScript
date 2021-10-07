@@ -9,10 +9,21 @@
 		"statusCode": 400
 	},
 	{
-		"page": 2,
+		"page": 1,
+		"expectedNextPage": 2,
+		"errorMsg": null,
+		"statusCode": 200
+	},
+	{
+		"page": 9999999,
 		"expectedNextPage": null,
 		"errorMsg": null,
 		"statusCode": 200
+	},
+	{
+		"count": 6,
+		"errorMsg": "invalid_amount",
+		"statusCode": 400
 	},
 	{
 		"count": -1,
@@ -40,8 +51,8 @@
 		"statusCode": 200
 	},
 	{
-		"count": 2,
-		"itemNum": 2,
+		"count": 46,
+		"itemNum": 46,
 		"errorMsg": null,
 		"statusCode": 200
 	},
