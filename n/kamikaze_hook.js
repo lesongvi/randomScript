@@ -5,12 +5,12 @@ const nsfsk = false;
 class PacketHook extends EventTarget {
   static get CONST() {
     return {
-      BUILD: "MjQ3MThlNmM0OWJiZDI1MzA0MDFhNWU5NjkwNjUzMzVkMTMwMGYyZQ==",
-      SEND_PACKET_INDEX: 106,
-      RECV_PACKET_INDEX: 407,
+      BUILD: "OTU4NmNmYmE2NzE5Zjc0NWEyYmU5YWI5ZWE0NDdiMjEyNmUxMDAwNw==",
+      SEND_PACKET_INDEX: 105,
+      RECV_PACKET_INDEX: 406,
       MALLOC: "R",
-      FREE: "A",
-      SOCKET_PTR: 104064
+      FREE: "B",
+      SOCKET_PTR: 102364
     }
   }
 
@@ -59,7 +59,7 @@ class PacketHook extends EventTarget {
           OP_GET_LOCAL, 2,
           OP_CALL, ...VarUint32ToArray(mainHook.i32()),
           OP_IF, VALUE_TYPE_BLOCK,
-          OP_RETURN,
+            OP_RETURN,
           OP_END,
           ...bytes
         ]);
@@ -70,7 +70,7 @@ class PacketHook extends EventTarget {
           OP_GET_LOCAL, 1,
           OP_CALL, ...VarUint32ToArray(mainHook.i32()),
           OP_IF, VALUE_TYPE_BLOCK,
-          OP_RETURN,
+            OP_RETURN,
           OP_END,
           ...bytes
         ]);
