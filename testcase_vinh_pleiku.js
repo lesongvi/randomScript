@@ -3,6 +3,9 @@
  * NÉM VÀO TRONG hoangvinh.js
  *
  * Author: Vinh Xua(n-guyen) Hoang
+ *
+ * Không share đồ của maxmines nhá
+ * 4 INTERNAL USE ONLY!
  */
 
 var { By, until, Key } = require('selenium-webdriver');
