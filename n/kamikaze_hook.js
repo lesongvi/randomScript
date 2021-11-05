@@ -5,12 +5,12 @@ const nsfsk = false;
 class PacketHook extends EventTarget {
   static get CONST() {
     return {
-      BUILD: "OTU4NmNmYmE2NzE5Zjc0NWEyYmU5YWI5ZWE0NDdiMjEyNmUxMDAwNw==",
+      BUILD: "ZDBlNGRjZTlkMzlmYmQ1ZGZhMDYzMmQ1YTBmODkxZDliZDUxNzJlYg==",
       SEND_PACKET_INDEX: 105,
-      RECV_PACKET_INDEX: 406,
+      RECV_PACKET_INDEX: 403,
       MALLOC: "R",
-      FREE: "B",
-      SOCKET_PTR: 102364
+      FREE: "u",
+      SOCKET_PTR: 104204
     }
   }
 
