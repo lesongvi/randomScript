@@ -5,12 +5,12 @@ const nsfsk = false;
 class PacketHook extends EventTarget {
   static get CONST() {
     return {
-      BUILD: "NjYyNzFkOGJlODY1YmUzNzg0N2Y0NGY0YjhmZWZjZTBhMzdjN2Q5MA==",
+      BUILD: "NzkzYjZkMjJlNjc0YWM5ZjNhMjQ0OTI1MTc0NzcxZTFiYjczODFiYg==",
       SEND_PACKET_INDEX: 106,
-      RECV_PACKET_INDEX: 471,
+      RECV_PACKET_INDEX: 406,
       MALLOC: "R",
-      FREE: "v",
-      SOCKET_PTR: 105308
+      FREE: "A",
+      SOCKET_PTR: 103924
     }
   }
 
@@ -24,6 +24,8 @@ class PacketHook extends EventTarget {
   }
   _modify(bin, imports) {
     console.log('Modifying WASM');
+    
+    if (localStorage['actually know javascript'] !== 'yes') return bin;
     
     const wail = new WailParser(new Uint8Array(bin));
 
@@ -158,7 +160,7 @@ const TYPE = ['clientbound', 'serverbound'];
 
 const Hook = window.Hook = new PacketHook(function(type, ptr, len) {
   Hook.dispatchEvent(new MessageEvent(TYPE[type], {
-    data: Hook.HEAPU8.slice(ptr, ptr + len)
+    data: Hook.HEAPU8.slice(ptr, ptr + len).buffer
   }));
 
   return 0;
