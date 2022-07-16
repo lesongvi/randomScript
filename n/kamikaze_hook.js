@@ -1,16 +1,12 @@
-// https://debug.notevn.com/1904s
-
-const nsfsk = false;
-
 class PacketHook extends EventTarget {
   static get CONST() {
     return {
-      BUILD: "MDNiNGQ2NzVjNWFkMDEzMzZjOTNlOWE2Y2UwMWYxYWU3OGJlZTMwMw==",
-      SEND_PACKET_INDEX: 106,
-      RECV_PACKET_INDEX: 473,
-      MALLOC: "R",
-      FREE: "t",
-      SOCKET_PTR: 104048
+      BUILD: "ODNjZjNjMWE3OTczNjUzZTA3ZDhkOGQ0MTA4Y2ViMmI0NzJmZTZjMg==",
+      SEND_PACKET_INDEX: 122,
+      RECV_PACKET_INDEX: 472,
+      MALLOC: "sa",
+      FREE: "R",
+      SOCKET_PTR: 134824
     }
   }
 
@@ -24,8 +20,6 @@ class PacketHook extends EventTarget {
   }
   _modify(bin, imports) {
     console.log('Modifying WASM');
-    
-    if (localStorage['actually know javascript'] !== 'yes') return bin;
     
     const wail = new WailParser(new Uint8Array(bin));
 
@@ -61,7 +55,7 @@ class PacketHook extends EventTarget {
           OP_GET_LOCAL, 2,
           OP_CALL, ...VarUint32ToArray(mainHook.i32()),
           OP_IF, VALUE_TYPE_BLOCK,
-            OP_RETURN,
+              OP_RETURN,
           OP_END,
           ...bytes
         ]);
@@ -72,7 +66,7 @@ class PacketHook extends EventTarget {
           OP_GET_LOCAL, 1,
           OP_CALL, ...VarUint32ToArray(mainHook.i32()),
           OP_IF, VALUE_TYPE_BLOCK,
-            OP_RETURN,
+              OP_RETURN,
           OP_END,
           ...bytes
         ]);
@@ -93,11 +87,14 @@ class PacketHook extends EventTarget {
 
       imports.hook = { mainHook };
       
-      this.HEAPU8 = new Uint8Array(imports.a.memory.buffer);
-      this.HEAP32 = new Int32Array(imports.a.memory.buffer);
 
       return _initWasm(bin, imports).then((wasm) => {
         this.wasm = wasm.instance;
+
+        const memory = Object.values(this.wasm.exports).find(e => e instanceof WebAssembly.Memory);
+
+        this.HEAPU8 = new Uint8Array(memory.buffer);
+        this.HEAP32 = new Int32Array(memory.buffer);
         
         this.malloc = this.wasm.exports[PacketHook.CONST.MALLOC];
         this.free = this.wasm.exports[PacketHook.CONST.FREE];
@@ -115,11 +112,11 @@ class PacketHook extends EventTarget {
 
   _hijack() {
     const that = this;
-    window.Object.defineProperty(Object.prototype, "postRun", {
+    window.Object.defineProperty(Object.prototype, "dynCall_v", {
       get() {},
-      set(postRun) {
-        delete Object.prototype.postRun
-        this.postRun = postRun;
+      set(dynCall_v) {
+        delete Object.prototype.dynCall_v
+        this.dynCall_v = dynCall_v;
 
         that.Module = this;
         console.log('Module exports done! Hook.Module');
@@ -154,13 +151,13 @@ class PacketHook extends EventTarget {
   }
 }
 
-if (!nsfsk) throw "Packet Hook";
+WebAssembly.instantiateStreaming = (r, i) => r.arrayBuffer().then(b => WebAssembly.instantiate(b, i));
 
 const TYPE = ['clientbound', 'serverbound'];
 
 const Hook = window.Hook = new PacketHook(function(type, ptr, len) {
   Hook.dispatchEvent(new MessageEvent(TYPE[type], {
-    data: Hook.HEAPU8.slice(ptr, ptr + len).buffer
+    data: Hook.HEAPU8.subarray(ptr, ptr + len)
   }));
 
   return 0;
