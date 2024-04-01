@@ -20,7 +20,6 @@ PODNAME_MAP=(
     [w]="worker"
 )
 
-
 NAMESPACE="${NAMESPACE_MAP[$1]:-$1}"
 POD_NAME="${PODNAME_MAP[$2]:-$2}"
 RESOURCENAME="${3:-deployments}"
@@ -28,3 +27,5 @@ RESOURCENAME="${3:-deployments}"
 echo kubectl -n "$NAMESPACE" edit "$RESOURCENAME" "$POD_NAME"
 
 kubectl -n "$NAMESPACE" edit "$RESOURCENAME" "$POD_NAME"
+
+exit 0
