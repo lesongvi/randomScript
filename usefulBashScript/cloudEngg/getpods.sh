@@ -15,8 +15,8 @@ NAMESPACE_MAP=(
 
 NAMESPACE="${NAMESPACE_MAP[$1]:-$1}"
 
-echo kubectl -n "$NAMESPACE" get pods
+echo kubectl -n "$NAMESPACE" get pods ${@:2}
 
-kubectl -n "$NAMESPACE" get pods
+kubectl -n "$NAMESPACE" get pods ${@:2}
 
 exit 0
