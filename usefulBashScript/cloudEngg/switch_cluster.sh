@@ -16,3 +16,5 @@ CLUSTERNAME="${CLUSTER_MAP[$1]:-$1}"
 echo aws eks --region ap-northeast-1 update-kubeconfig --name $CLUSTERNAME
 
 aws eks --region ap-northeast-1 update-kubeconfig --name $CLUSTERNAME
+
+exit 0
