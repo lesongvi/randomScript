@@ -31,8 +31,8 @@ else
   echo "I hope you know what you are doing"
 fi
 
-exit 0
-
 echo eksctl scale nodegroup --cluster $CLUSTERNAME --name $CLUSTERNAME-eks-nodes --nodes $NUMBEROFNODE --nodes-min $NUMBEROFNODE --nodes-max $NUMBEROFNODE
 
 eksctl scale nodegroup --cluster $CLUSTERNAME --name $CLUSTERNAME-eks-nodes --nodes $NUMBEROFNODE --nodes-min $NUMBEROFNODE --nodes-max $NUMBEROFNODE
+
+exit 0
