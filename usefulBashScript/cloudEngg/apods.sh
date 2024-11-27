@@ -1,7 +1,7 @@
 #!/bin/bash
 
 usage() {
-  echo "Usage: $0 <namespace> <action> [pod] [args]"
+  echo "Usage: $0 <cluster> <namespace> <action> [pod] [args]"
   echo "Clusters:"
   echo "  v             - vcluster"
   echo "  v1            - vcluster1"
@@ -84,7 +84,7 @@ ACTION_MAP=(
 	[lg]="logs"
 )
 
-ACTION="${ACTION_MAP[$2]:-$2}"
+ACTION="${ACTION_MAP[$3]:-$3}"
 
 POD=""
 if [[ "$ACTION" == "get" || "$ACTION" == "describe" || "$ACTION" == "delete" ]]; then
@@ -92,12 +92,13 @@ if [[ "$ACTION" == "get" || "$ACTION" == "describe" || "$ACTION" == "delete" ]];
 fi
 
 NAMESPACE=""
-if [[ -n "${STATIC_NAMESPACE_MAP[$1]}" ]]; then
-	NAMESPACE="${STATIC_NAMESPACE_MAP[$1]}"
-elif [[ -n "${CLUSTER_SPECIFIC_NAMESPACE_MAP[$1]}" ]]; then
-	NAMESPACE="${CLUSTER_MAP[$1]}-${CLUSTER_SPECIFIC_NAMESPACE_MAP[$1]}"
+if [[ -n "${STATIC_NAMESPACE_MAP[$2]}" ]]; then
+    NAMESPACE="${STATIC_NAMESPACE_MAP[$2]}"
+elif [[ -n "${CLUSTER_SPECIFIC_NAMESPACE_MAP[$2]}" ]]; then
+	CLUSTER="${CLUSTER_MAP[$1]}"
+	NAMESPACE="${CLUSTER}-${CLUSTER_SPECIFIC_NAMESPACE_MAP[$2]}"
 else
-	NAMESPACE="$1"
+	NAMESPACE="$2"
 fi
 
 echo kubectl -n "$NAMESPACE" "$ACTION"$POD ${@:4}
